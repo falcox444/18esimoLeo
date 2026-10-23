@@ -420,10 +420,10 @@
 
     <!-- Firebase SDK Setup -->
     <!-- Firebase Modulo e Logica di Connessione -->
+<!-- 1. FIREBASE: DATABASE E REGISTRAZIONE -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         // I TUOI DATI REALI DI FIREBASE
         const firebaseConfig = {
@@ -436,51 +436,11 @@
             measurementId: "G-Q3QB1QRVGK"
         };
 
-        // Inizializza l'app
+        // Inizializza l'app e il database
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Accesso anonimo per permettere la scrittura/lettura sicura
-        signInAnonymously(auth).catch(console.error);
-
-        // Funzione per caricare gli iscritti nel Pannello Admin
-        window.loadRegistrations = async function() {
-            const listContainer = document.getElementById('admin-users-list');
-            listContainer.innerHTML = '<tr><td colspan="3" class="text-center py-6"><i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin text-gray-500"></i></td></tr>';
-            if(window.lucide) lucide.createIcons();
-
-            try {
-                // Punta direttamente alla tua tabella "registrazioni"
-                const regsRef = collection(db, 'registrazioni');
-                const snapshot = await getDocs(regsRef);
-                let users = [];
-                snapshot.forEach(doc => {
-                    users.push(doc.data());
-                });
-                
-                // Ordina dal più recente al più vecchio
-                users.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-                if(users.length === 0) {
-                    listContainer.innerHTML = '<tr><td colspan="3" class="text-center py-6 text-gray-500 italic">Nessun agente registrato.</td></tr>';
-                    return;
-                }
-
-                listContainer.innerHTML = users.map(u => `
-                    <tr class="hover:bg-gray-800/50 transition-colors">
-                        <td class="px-4 py-3 font-semibold text-white capitalize">${u.nome || '-'}</td>
-                        <td class="px-4 py-3 capitalize">${u.cognome || '-'}</td>
-                        <td class="px-4 py-3 text-xs text-gray-500">${u.timestamp ? new Date(u.timestamp).toLocaleString('it-IT') : '-'}</td>
-                    </tr>
-                `).join('');
-            } catch(e) {
-                console.error("Errore nel caricamento degli utenti:", e);
-                listContainer.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-red-500">Errore di connessione al database.</td></tr>`;
-            }
-        };
-
-        // Gestione del Form di Registrazione
+        // --- GESTIONE FORM DI REGISTRAZIONE ---
         const registerForm = document.getElementById('register-form');
         const alertBox = document.getElementById('auth-alert');
         
@@ -497,7 +457,7 @@
                 if(window.lucide) lucide.createIcons();
 
                 try {
-                    // Salva i dati su Firestore nella tua tabella
+                    // Salva i dati su Firestore
                     const regsRef = collection(db, 'registrazioni');
                     await addDoc(regsRef, {
                         nome: nome,
@@ -505,21 +465,21 @@
                         timestamp: new Date().toISOString()
                     });
 
-                    // Mostra il messaggio di successo
+                    // Mostra il messaggio di successo e nasconde il form
                     document.getElementById('register-form').classList.add('hidden');
                     document.getElementById('auth-success').classList.remove('hidden');
                     document.getElementById('auth-success').classList.add('flex', 'fade-in');
 
                 } catch (error) {
-                    alertBox.textContent = "Errore: " + error.message;
+                    console.error("Errore Database:", error);
+                    alertBox.textContent = "Errore: verifica di aver aggiornato le Regole su Firestore.";
                     alertBox.classList.remove('hidden');
                     alertBox.classList.add('translate-y-2');
                     setTimeout(() => {
                         alertBox.classList.add('hidden');
                         alertBox.classList.remove('translate-y-2');
-                    }, 4000);
+                    }, 5000);
                 } finally {
-                    // Ripristina il bottone in caso di errore
                     if(!document.getElementById('register-form').classList.contains('hidden')){
                         btn.disabled = false;
                         btn.innerHTML = 'Registrati';
@@ -527,9 +487,44 @@
                 }
             });
         }
+
+        // --- FUNZIONE PER PANNELLO ADMIN ---
+        window.loadRegistrations = async function() {
+            const listContainer = document.getElementById('admin-users-list');
+            listContainer.innerHTML = '<tr><td colspan="3" class="text-center py-6"><i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin text-gray-500"></i></td></tr>';
+            if(window.lucide) lucide.createIcons();
+
+            try {
+                const regsRef = collection(db, 'registrazioni');
+                const snapshot = await getDocs(regsRef);
+                let users = [];
+                snapshot.forEach(doc => {
+                    users.push(doc.data());
+                });
+                
+                // Ordina dal più recente al più vecchio
+                users.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                if(users.length === 0) {
+                    listContainer.innerHTML = '<tr><td colspan="3" class="text-center py-6 text-gray-500 italic">Nessun agente registrato.</td></tr>';
+                    return;
+                }
+
+                listContainer.innerHTML = users.map(u => `
+                    <tr class="hover:bg-gray-800/50 transition-colors border-b border-gray-800">
+                        <td class="px-4 py-3 font-semibold text-white capitalize">${u.nome || '-'}</td>
+                        <td class="px-4 py-3 capitalize">${u.cognome || '-'}</td>
+                        <td class="px-4 py-3 text-xs text-gray-500">${u.timestamp ? new Date(u.timestamp).toLocaleString('it-IT') : '-'}</td>
+                    </tr>
+                `).join('');
+            } catch(e) {
+                console.error("Errore Admin:", e);
+                listContainer.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-red-500">Errore di connessione al database.</td></tr>`;
+            }
+        };
     </script>
 
-    <!-- Script Gestione UI e Navigazione -->
+    <!-- 2. UI: NAVIGAZIONE, PASSWORD E ANIMAZIONI -->
     <script>
         // Inizializza le icone
         if(window.lucide) lucide.createIcons();
@@ -545,26 +540,22 @@
 
         // Navigazione tra le sezioni
         function showSection(sectionId) {
-            // Nasconde tutte le sezioni
             document.querySelectorAll('.content-section').forEach(el => {
                 el.classList.add('hidden');
                 el.classList.remove('fade-in');
             });
             
-            // Rimuove la classe attiva dai menu
             document.querySelectorAll('.nav-item').forEach(el => {
                 el.classList.remove('active');
                 el.style.borderLeftColor = 'transparent';
             });
 
-            // Mostra la sezione scelta
             const target = document.getElementById(`section-${sectionId}`);
             if(target) {
                 target.classList.remove('hidden');
                 setTimeout(() => target.classList.add('fade-in'), 10);
             }
 
-            // Evidenzia il menu scelto
             const navItem = document.getElementById(`nav-${sectionId}`);
             if(navItem) {
                 navItem.classList.add('active');
@@ -573,37 +564,37 @@
                 }
             }
 
-            // Chiude la sidebar se su Mobile
             if(window.innerWidth < 768 && !sidebar.classList.contains('-translate-x-full')) {
                 toggleSidebar();
             }
+        }
+
+        // Funzione per l'effetto tremolio (errore)
+        function shakeInput(inputId) {
+            const input = document.getElementById(inputId);
+            input.classList.add('border-red-500', 'bg-red-950/20');
+            input.style.transform = 'translateX(-10px)';
+            setTimeout(() => input.style.transform = 'translateX(10px)', 50);
+            setTimeout(() => input.style.transform = 'translateX(-10px)', 100);
+            setTimeout(() => input.style.transform = 'translateX(10px)', 150);
+            setTimeout(() => input.style.transform = 'translateX(0)', 200);
+            input.value = '';
         }
 
         // Logica Password TOP SECRET (18011994)
         function checkSecretCode() {
             const input = document.getElementById('secret-code');
             const errorMsg = document.getElementById('secret-error');
-            const code = input.value.trim();
-
-            if (code === '18011994') {
+            
+            if (input.value.trim() === '18011994') {
                 errorMsg.classList.add('hidden');
                 document.getElementById('secret-lock-container').classList.add('hidden');
-                
                 const videoContainer = document.getElementById('secret-video-container');
                 videoContainer.classList.remove('hidden');
-                videoContainer.classList.add('flex');
+                videoContainer.classList.add('flex', 'fade-in');
             } else {
-                input.classList.add('border-red-500', 'bg-red-950/20');
-                input.value = '';
+                shakeInput('secret-code');
                 errorMsg.classList.remove('hidden');
-                
-                // Effetto tremolio
-                input.style.transform = 'translateX(-10px)';
-                setTimeout(() => input.style.transform = 'translateX(10px)', 50);
-                setTimeout(() => input.style.transform = 'translateX(-10px)', 100);
-                setTimeout(() => input.style.transform = 'translateX(10px)', 150);
-                setTimeout(() => input.style.transform = 'translateX(0)', 200);
-
                 setTimeout(() => {
                     input.classList.remove('border-red-500', 'bg-red-950/20');
                     errorMsg.classList.add('hidden');
@@ -620,26 +611,20 @@
 
         // Logica Accesso ADMIN (admin18)
         function checkAdminPassword() {
-            const pass = document.getElementById('admin-password').value;
-            const error = document.getElementById('admin-error');
+            const input = document.getElementById('admin-password');
+            const errorMsg = document.getElementById('admin-error');
             
-            if(pass === 'admin18') {
-                error.classList.add('hidden');
+            if(input.value === 'admin18') {
+                errorMsg.classList.add('hidden');
                 document.getElementById('admin-login').classList.add('hidden');
-                document.getElementById('admin-dashboard').classList.remove('hidden');
+                const dashboard = document.getElementById('admin-dashboard');
+                dashboard.classList.remove('hidden');
+                dashboard.classList.add('fade-in');
                 
                 if(window.loadRegistrations) window.loadRegistrations();
             } else {
-                error.classList.remove('hidden');
-                
-                const input = document.getElementById('admin-password');
-                input.style.transform = 'translateX(-10px)';
-                setTimeout(() => input.style.transform = 'translateX(10px)', 50);
-                setTimeout(() => input.style.transform = 'translateX(-10px)', 100);
-                setTimeout(() => input.style.transform = 'translateX(10px)', 150);
-                setTimeout(() => input.style.transform = 'translateX(0)', 200);
-                
-                input.value = '';
+                shakeInput('admin-password');
+                errorMsg.classList.remove('hidden');
             }
         }
 
