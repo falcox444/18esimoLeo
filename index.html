@@ -2,7 +2,8 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Blocco dello zoom su mobile aggiunto qui -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Progetto Leonardo 18°</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
@@ -115,35 +116,34 @@
         </header>
 
         <!-- Dynamic Content Container -->
-        <div id="content-container" class="flex-1 p-6 md:p-12 pt-24 md:pt-32 w-full max-w-5xl mx-auto flex flex-col justify-start min-h-[calc(100vh-80px)]">
+        <div id="content-container" class="flex-1 p-6 md:p-12 pt-16 md:pt-32 w-full max-w-5xl mx-auto flex flex-col justify-start min-h-[calc(100vh-80px)]">
             
             <!-- SECTION: CHI È LEONARDO -->
-            <section id="section-about" class="content-section flex flex-col items-center pb-12 w-full">
-                <div class="text-center mb-8 w-full max-w-4xl mx-auto">
+            <section id="section-about" class="content-section flex flex-col items-center pb-12 w-full overflow-hidden">
+                <div class="text-center mb-8 w-full max-w-4xl mx-auto px-2">
                     <span class="text-red-600 font-bold tracking-[0.5em] text-xs md:text-sm uppercase mb-4 block animate-pulse">Dossier #001</span>
-                    <!-- Testo rimpicciolito per il mobile (text-4xl invece di 5xl, leading-tight) -->
-                    <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold cinematic-text mb-6 tracking-wider leading-tight">CHI È<br/><span class="text-white">LEONARDO?</span></h1>
+                    <!-- Testo ridimensionato per evitare sbavature su mobile (text-4xl ridotto a text-3xl per schermi piccoli) -->
+                    <h1 class="text-3xl sm:text-5xl md:text-7xl font-bold cinematic-text mb-6 tracking-wider leading-tight">CHI È<br class="block sm:hidden"/><span class="text-white"> LEONARDO?</span></h1>
                     <div class="w-24 md:w-32 h-1 bg-red-700 mx-auto rounded-full mb-8 shadow-[0_0_15px_rgba(220,38,38,0.8)]"></div>
                     
-                    <div class="space-y-6 text-gray-300 leading-relaxed text-lg md:text-xl font-light px-2">
+                    <div class="space-y-6 text-gray-300 leading-relaxed text-base md:text-xl font-light px-2">
                         <p>
                             Fenomeno della natura? Pornodivo mancato? O semplicemente un disagiato che sta per compiere 18 anni senza alcuna dignità?
                         </p>
                         <p>
-                            Da 18 anni, il soggetto noto come <strong class="text-white font-bold text-xl md:text-2xl">"Leonardo"</strong> vive di pura mitomania, tra maratone solitarie di sei ore, svenimenti al Monte della Madonna e piagnistei su Discord. Molti ascoltano le sue cazzate, nessuno ci crede veramente. Il carrello dell'Epica Day. L'ossessione per le rosse. La tragica verità. 
+                            Da 18 anni, il soggetto noto come <strong class="text-white font-bold text-lg md:text-2xl">"Leonardo"</strong> vive di pura mitomania, tra maratone solitarie di sei ore, svenimenti al Monte della Madonna e piagnistei su Discord. Molti ascoltano le sue cazzate, nessuno ci crede veramente. Il carrello dell'Epica Day. L'ossessione per le rosse. La tragica verità. 
                         </p>
-                        <p class="italic text-gray-400 text-base md:text-lg">
+                        <p class="italic text-gray-400 text-sm md:text-lg">
                             Siete pronti a scoprire l'oscuro (e imbarazzante) piano B del festeggiato?
                         </p>
                     </div>
                 </div>
 
                 <!-- TRAILER SECTION -->
-                <div class="w-full max-w-4xl mx-auto flex-col items-center mt-4 px-2 w-full">
+                <div class="w-full max-w-4xl mx-auto flex-col items-center mt-4 px-2">
                     <div class="text-center mb-6">
                         <h2 class="text-2xl md:text-4xl font-bold cinematic-text text-white tracking-widest">TRAILER UFFICIALE</h2>
                     </div>
-                    <!-- Qui è dove inserisci l'anteprima! Modifica src="INSERISCI_QUI_IL_NOME_DEL_VIDEO_TRAILER.mp4" -->
                     <div class="w-full aspect-video bg-black border-2 border-gray-800 rounded-2xl shadow-[0_0_40px_rgba(220,38,38,0.15)] overflow-hidden relative group hover:border-red-900/50 transition-colors duration-500">
                         <video 
                             controls 
@@ -161,10 +161,10 @@
                 <div class="text-center mb-12">
                     <span class="text-red-600 font-bold tracking-[0.3em] text-sm uppercase mb-2 block">I Complici</span>
                     <h1 class="text-4xl md:text-6xl font-bold cinematic-text mb-6">Il Casting</h1>
-                    <p class="text-gray-400 max-w-2xl mx-auto px-4"Coloro che hanno reso possibile questo documentario.</p>
+                    <p class="text-gray-400 max-w-2xl mx-auto px-4">Coloro che hanno reso possibile questo documentario.</p>
                 </div>
 
-                <!-- 10 Person Grid: 2 cols on mobile, 3 on tablet, 5 on desktop -->
+                <!-- 10 Person Grid -->
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6 px-2">
                     
                     <!-- Card 1 -->
@@ -286,7 +286,6 @@
                             <p class="text-[9px] md:text-xs text-red-500 mt-1 font-mono uppercase tracking-wider line-clamp-1">Anonymous</p>
                         </div>
                     </div>
-
                 </div>
             </section>
 
@@ -361,7 +360,6 @@
                         <h2 class="text-2xl md:text-3xl font-bold cinematic-text text-white">Video Ufficiale - Progetto Leonardo 18°</h2>
                     </div>
                     
-                    <!-- Qui è dove inserisci il filmato completo! Modifica src="INSERISCI_QUI_IL_NOME_DEL_VIDEO_FINALE.mp4" -->
                     <div class="aspect-video w-full rounded-xl overflow-hidden shadow-2xl shadow-red-900/20 border border-red-900/30">
                         <video controls class="w-full h-full object-cover">
                             <!-- Usa il link Dropbox con ?raw=1 alla fine -->
@@ -419,13 +417,10 @@
     </main>
 
     <!-- Firebase SDK Setup -->
-    <!-- Firebase Modulo e Logica di Connessione -->
-<!-- 1. FIREBASE: DATABASE E REGISTRAZIONE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // I TUOI DATI REALI DI FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyAqEIXi9clz53Tw2hqrTkZe_cJ9qghm4-g",
             authDomain: "mongoloide-3aa1c.firebaseapp.com",
@@ -436,11 +431,9 @@
             measurementId: "G-Q3QB1QRVGK"
         };
 
-        // Inizializza l'app e il database
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- GESTIONE FORM DI REGISTRAZIONE ---
         const registerForm = document.getElementById('register-form');
         const alertBox = document.getElementById('auth-alert');
         
@@ -451,13 +444,11 @@
                 const cognome = document.getElementById('reg-surname').value.trim();
                 const btn = document.getElementById('btn-register');
 
-                // Animazione bottone di caricamento
                 btn.disabled = true;
                 btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 mx-auto animate-spin"></i>';
                 if(window.lucide) lucide.createIcons();
 
                 try {
-                    // Salva i dati su Firestore
                     const regsRef = collection(db, 'registrazioni');
                     await addDoc(regsRef, {
                         nome: nome,
@@ -465,7 +456,6 @@
                         timestamp: new Date().toISOString()
                     });
 
-                    // Mostra il messaggio di successo e nasconde il form
                     document.getElementById('register-form').classList.add('hidden');
                     document.getElementById('auth-success').classList.remove('hidden');
                     document.getElementById('auth-success').classList.add('flex', 'fade-in');
@@ -488,7 +478,6 @@
             });
         }
 
-        // --- FUNZIONE PER PANNELLO ADMIN ---
         window.loadRegistrations = async function() {
             const listContainer = document.getElementById('admin-users-list');
             listContainer.innerHTML = '<tr><td colspan="3" class="text-center py-6"><i data-lucide="loader-2" class="w-6 h-6 mx-auto animate-spin text-gray-500"></i></td></tr>';
@@ -502,7 +491,6 @@
                     users.push(doc.data());
                 });
                 
-                // Ordina dal più recente al più vecchio
                 users.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
                 if(users.length === 0) {
@@ -524,12 +512,9 @@
         };
     </script>
 
-    <!-- 2. UI: NAVIGAZIONE, PASSWORD E ANIMAZIONI -->
     <script>
-        // Inizializza le icone
         if(window.lucide) lucide.createIcons();
 
-        // Toggle della Sidebar (Mobile)
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('mobile-overlay');
 
@@ -538,7 +523,6 @@
             overlay.classList.toggle('hidden');
         }
 
-        // Navigazione tra le sezioni
         function showSection(sectionId) {
             document.querySelectorAll('.content-section').forEach(el => {
                 el.classList.add('hidden');
@@ -569,7 +553,6 @@
             }
         }
 
-        // Funzione per l'effetto tremolio (errore)
         function shakeInput(inputId) {
             const input = document.getElementById(inputId);
             input.classList.add('border-red-500', 'bg-red-950/20');
@@ -581,7 +564,6 @@
             input.value = '';
         }
 
-        // Logica Password TOP SECRET (18011994)
         function checkSecretCode() {
             const input = document.getElementById('secret-code');
             const errorMsg = document.getElementById('secret-error');
@@ -609,7 +591,6 @@
             });
         }
 
-        // Logica Accesso ADMIN (admin18)
         function checkAdminPassword() {
             const input = document.getElementById('admin-password');
             const errorMsg = document.getElementById('admin-error');
